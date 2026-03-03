@@ -1,6 +1,13 @@
-def main():
-    print("Hello from fastapi-crud-operations!")
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+from database import engine, Base
+from routers import users
 
+Base.metadata.create_all(bind=engine)
 
-if __name__ == "__main__":
-    main()
+app = FastAPI()
+app.include_router(users.router, prefix="/users", tags=["users"])
+
+@app.get("/")
+def root():
+    return RedirectResponse(url="/users")
